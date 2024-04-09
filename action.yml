@@ -60,7 +60,7 @@ runs:
         #Generate Crumb value
         CRUMB=`curl -s -u "$userName:$password" $urlOfJenkinsServer'/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,":",//crumb)'`
         
-        if [[ $parameter == '' ]]; then
+        if [[ "$parameter" == '' ]]; then
           TRIGGERJOBJSON=$(curl -I -s -X POST -u "$userName:$password"  -H "$CRUMB" "$urlOfJenkinsServer"/job/"$jenkinsJobName"/build)
         else
           TRIGGERJOBJSON=$(curl -I -s -X POST -u "$userName:$password"  -H "$CRUMB" "$urlOfJenkinsServer"/job/"$jenkinsJobName"/buildWithParameters/?token="$jobToken"/&"$parameter")
@@ -80,6 +80,7 @@ runs:
           echo "Job triggered successfully"
           echo "--------------------------------------"
         else
+          echo $TRIGGERJOBJSON
           echo "201 Created NOT FOUND. Exiting script with error"
           echo "--------------------------------------"
           exit 1
