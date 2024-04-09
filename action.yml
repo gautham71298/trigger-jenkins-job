@@ -25,6 +25,14 @@ inputs:
     description: 'true/false - turns on verbose logging'
     required: false
     default: false
+  jenkins-param: # Parameter to be sent for jenkins to use
+    description: 'Parameter for Jenkins job triggered remotely (eg: branch=develop)'
+    required: false
+    default: ''
+  jenkins-job-token: # Token of the jenkins job
+    description: 'Token used for Jenkins job triggered remotely'
+    required: false
+    default: ''
   
 runs:
   using: "composite"
@@ -39,6 +47,7 @@ runs:
         verbose=${{ inputs.verbose }}
         userName=${{ inputs.jenkins-username }}
         password=${{ inputs.jenkins-pat }}
+        parameter=${{ inputs.jenkins-param }}
 
         startTime=$(date)
         startTimeSeconds=$(date -d "$startTime" +%s) 
@@ -50,7 +59,11 @@ runs:
 
         #Generate Crumb value
         CRUMB=`curl -s -u "$userName:$password" $urlOfJenkinsServer'/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,":",//crumb)'`
-        TRIGGERJOBJSON=$(curl -I -s -X POST -u "$userName:$password"  -H "$CRUMB" "$urlOfJenkinsServer"/job/"$jenkinsJobName"/build)
+        
+        if [[ $parameter == '' ]]; then
+          TRIGGERJOBJSON=$(curl -I -s -X POST -u "$userName:$password"  -H "$CRUMB" "$urlOfJenkinsServer"/job/"$jenkinsJobName"/build)
+        else
+          TRIGGERJOBJSON=$(curl -I -s -X POST -u "$userName:$password"  -H "$CRUMB" "$urlOfJenkinsServer"/job/"$jenkinsJobName"/buildWithParameters/?token="$jobToken"/&"$parameter")
         
         if [[ $verbose == true ]]; then
           echo "Results of Triggering The Job:"
