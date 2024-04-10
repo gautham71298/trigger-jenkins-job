@@ -70,6 +70,7 @@ runs:
           TRIGGERJOBJSON=$(curl -I -s -X POST -u "$userName:$password"  -H "$CRUMB" "$urlOfJenkinsServer"/job/"$jenkinsJobName"/build)
         else
           TRIGGERJOBJSON=$(curl -I -s -X POST -u "$userName:$password"  -H "$CRUMB" "$urlOfJenkinsServer"/job/"$jenkinsJobName"/buildWithParameters/?token="$jobToken"/&"$parameter")
+        fi
         
         if [[ $verbose == true ]]; then
           echo "Results of Triggering The Job:"
