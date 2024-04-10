@@ -28,7 +28,7 @@ inputs:
   jenkins-param: # Parameter to be sent for jenkins to use
     description: 'Parameter for Jenkins job triggered remotely (eg: branch=develop)'
     required: false
-    default: ''
+    default: null
   jenkins-job-token: # Token of the jenkins job
     description: 'Token used for Jenkins job triggered remotely'
     required: false
@@ -66,7 +66,7 @@ runs:
         echo $parameter
         echo "--------------------------------------"
         
-        if [[ $parameter == "" ]]; then
+        if [[ $parameter == null ]]; then
           TRIGGERJOBJSON=$(curl -I -s -X POST -u "$userName:$password"  -H "$CRUMB" "$urlOfJenkinsServer"/job/"$jenkinsJobName"/build)
         else
           TRIGGERJOBJSON=$(curl -I -s -X POST -u "$userName:$password"  -H "$CRUMB" "$urlOfJenkinsServer"/job/"$jenkinsJobName"/buildWithParameters/?token="$jobToken"/&"$parameter")
