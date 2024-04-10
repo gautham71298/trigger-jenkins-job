@@ -64,6 +64,8 @@ runs:
         echo "Custom params"
         echo "--------------------------------------"
         echo $parameter
+        echo "--------------------------------------"
+        
         if [[ $parameter == "" ]]; then
           TRIGGERJOBJSON=$(curl -I -s -X POST -u "$userName:$password"  -H "$CRUMB" "$urlOfJenkinsServer"/job/"$jenkinsJobName"/build)
         else
